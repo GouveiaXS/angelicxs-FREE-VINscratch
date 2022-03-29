@@ -166,17 +166,6 @@ AddEventHandler('angelicxs-FREE-VINscratch:Server:CoastIsClearFalse', function()
 	TriggerClientEvent('angelicxs-FREE-VINscratch:CoastIsClearFalse',-1)
 end)
 
-RegisterServerEvent('angelicxs-FREE-VINscratch:Server:TrackerOff')
-AddEventHandler('angelicxs-FREE-VINscratch:Server:TrackerOff', function()
-	TriggerClientEvent('angelicxs-FREE-VINscratch:TrackerOff',-1)
-end)
-
-RegisterServerEvent('angelicxs-FREE-VINscratch:Server:TrackerOn')
-AddEventHandler('angelicxs-FREE-VINscratch:Server:TrackerOn', function()
-	TriggerClientEvent('angelicxs-FREE-VINscratch:TrackerOn',-1)
-end)
-
-
 RegisterServerEvent('angelicxs-FREE-VINscratch:Server:TrackerCoords')
 AddEventHandler('angelicxs-FREE-VINscratch:Server:TrackerCoords', function(coords)
 	TriggerClientEvent('angelicxs-FREE-VINscratch:TrackingVehicle',-1,coords)
