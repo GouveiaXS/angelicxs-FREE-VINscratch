@@ -12,4 +12,3 @@ Criminals will go speak to the VIN dealer to request a vehicle to boost. After f
 - Idles at 0.00ms
 
 Youtube Preview: https://youtu.be/hV3RcmY_K5c
-If you enjoyed this and want to consider supporting potential future releases please check out the premium VIN scratch heist: RELEASING SOON
