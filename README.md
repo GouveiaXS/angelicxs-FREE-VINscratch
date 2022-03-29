@@ -9,5 +9,6 @@ Criminals will go speak to the VIN dealer to request a vehicle to boost. After f
 - Over 20 pre-included vehicles to be selected randomly each heist
 - Over 8 pre-included delivery points to be selected randomly each heist
 - Over 125 pre-included starting points to be selected randomly each heist
+- Idles at 0.00ms
 
-If you enojyed this and want to consider supporting potential future releases please check out the premium VIN scratch heist:
+If you enjoyed this and want to consider supporting potential future releases please check out the premium VIN scratch heist: RELEASING SOON
