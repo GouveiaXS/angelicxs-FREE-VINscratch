@@ -22,6 +22,7 @@ local DropLocationNPC = false
 local TrackingDeviceStatus = false
 local MissionRoute = nil
 local CarAvailable = false
+local FindMeBlip = nil
 
 RegisterNetEvent('angelicxs-FREE-VINscratch:Notify', function(message, type)
 	if Config.UseCustomNotify then
@@ -87,25 +88,23 @@ end)
 
 -- Starting NPC Spawn
 CreateThread(function()
+    local Player = PlayerPedId()
     while true do
-        local Sleep = 1500
-        local Player = PlayerPedId()
         for k, v in pairs(Config.NPCLocations) do
             local Pos = GetEntityCoords(Player)
             local Dist = #(Pos - vector3(v.Coords[1],v.Coords[2],v.Coords[3]))
             if Dist <= 50 and not PedSpawned then
                 TriggerEvent('angelicxs-FREE-VINscratch:SpawnNPC',v.Coords,v.Model,v.Scenario,v.Icon)
                 PedSpawned = true
-                Sleep = 500
             elseif DoesEntityExist(NPC) and PedSpawned then
-                local Dist2 = #(Pos - vector3(v.Coords[1],v.Coords[2],v.Coords[3]))
+                local Dist2 = #(Pos - GetEntityCoords(NPC))
                  if Dist2 > 50 then
                     DeleteEntity(NPC)
                     PedSpawned = false
                 end
             end
         end
-        Wait(Sleep)
+        Wait(2000)
     end
 end)
 
@@ -123,9 +122,9 @@ end)
 -- Events
 
 CreateThread(function()
+    local Player = PlayerPedId()
     while true do
         local Sleep = 1500
-        local Player = PlayerPedId()
         local Pos = GetEntityCoords(Player)
         for k, v in pairs(Config.NPCLocations) do
             local Dist = #(Pos - vector3(v.Coords[1],v.Coords[2],v.Coords[3]))
@@ -134,10 +133,8 @@ CreateThread(function()
                 if Dist <= 3 then
                     nearType = v.Type
                     DrawText3Ds(v.Coords[1],v.Coords[2],v.Coords[3], Config.Lang['request'])
-                    if IsControlJustReleased(0, 38) and not GlobalJob then
+                    if IsControlJustReleased(0, 38) then
                         TriggerEvent('angelicxs-FREE-VINscratch:RobberyCheck')
-                    elseif IsControlJustReleased(0, 38) and GlobalJob then
-                        TriggerEvent('angelicxs-FREE-VINscratch:Notify', Config.Lang['working'], Config.LangType['error'])
                     end
                 else
                     nearType = 'none'
@@ -149,8 +146,8 @@ CreateThread(function()
 end)
 
 RegisterNetEvent('angelicxs-FREE-VINscratch:RobberyCheck', function()
-    if not GlobalJob then
-        if not CurrentJob then
+    if not CurrentJob then
+        if not GlobalJob then
             if Config.RequireMinimumLEO then
                 local StartRobbery = false
                 if Config.UseESX then
@@ -178,10 +175,10 @@ RegisterNetEvent('angelicxs-FREE-VINscratch:RobberyCheck', function()
                 TriggerEvent('angelicxs-FREE-VINscratch:VINStart', nearType)
             end
         else
-            TriggerEvent('angelicxs-FREE-VINscratch:Notify', 'I gave you a vehicle, now go get it!', Config.LangType['error'])
+            TriggerEvent('angelicxs-FREE-VINscratch:Notify', Config.Lang['working'], Config.LangType['error'])
         end
     else
-        TriggerEvent('angelicxs-FREE-VINscratch:Notify', Config.Lang['working'], Config.LangType['error'])
+        TriggerEvent('angelicxs-FREE-VINscratch:Notify', Config.Lang['job'], Config.LangType['error'])
     end
 end)
 
@@ -231,7 +228,7 @@ function Lockpick(StartSpot)
     local FoundIt = false
     local RandomOffset = math.random(-100, 100)
     local FindTime = 30 * 60
-    local FindMeBlip = AddBlipForRadius((StartSpot[1]+RandomOffset),(StartSpot[2]+RandomOffset),(StartSpot[3]+RandomOffset), 450.0)
+    FindMeBlip = AddBlipForRadius((StartSpot[1]+RandomOffset),(StartSpot[2]+RandomOffset),(StartSpot[3]+RandomOffset), 450.0)
     SetBlipSprite(FindMeBlip, 161)
     SetBlipColour(FindMeBlip, 83)
     SetBlipAsShortRange(FindMeBlip,false)
@@ -252,11 +249,12 @@ function Lockpick(StartSpot)
     end)
     CreateThread(function()
         while not FoundIt do
-            local Sleep = 1000
+            local Sleep = 2000
             local Pos = GetEntityCoords(Player)
             if #(Pos - vector3(StartSpot[1],StartSpot[2],StartSpot[3])) <= 50 and not FoundIt  then
-                Sleep = 0
+                Sleep = 1000
                 if #(Pos - vector3(StartSpot[1],StartSpot[2],StartSpot[3])) <= 4 and not FoundIt then
+                    Sleep = 0
                     RemoveBlip(FindMeBlip)
                     DrawText3Ds(StartSpot[1],StartSpot[2],StartSpot[3],Config.Lang['lockpick'])
                     if IsControlJustReleased(0, 38) then
@@ -293,7 +291,6 @@ function Lockpick(StartSpot)
                             if Config.CleanGetAway then
                                 TriggerServerEvent('angelicxs-FREE-VINscratch:Server:IsCoastClear',EndPoint)
                             end
-                            TriggerServerEvent('angelicxs-FREE-VINscratch:Server:TrackerOn')
                             TriggerServerEvent('angelicxs-FREE-VINscratch:Server:NotifyPolice',4)
                             TriggerEvent('angelicxs-FREE-VINscratch:GPSRoute',EndPoint)
                             TriggerEvent('angelicxs-FREE-VINscratch:CustomDisptachFoundIt',Pos)
@@ -329,16 +326,9 @@ AddEventHandler('angelicxs-FREE-VINscratch:NotifyPolice',function(Message)
 end)
 
 RegisterNetEvent('angelicxs-FREE-VINscratch:GPSRoute',function(coords)
-    MissionRoute = AddBlipForCoord(coords[1], coords[2], coords[3])
     local Player = PlayerPedId()
     local DropPed = false
     local Tracker = true
-    SetBlipColour(MissionRoute,5)
-	BeginTextCommandSetBlipName("STRING")
-	AddTextComponentString(Config.Lang['delivery_blip'])
-	EndTextCommandSetBlipName(MissionRoute)
-	SetBlipRoute(MissionRoute, true)
-	SetBlipRouteColour(MissionRoute, 5)
     DropLocationNPC = true
     CreateThread(function()
         while CurrentJob do
@@ -348,7 +338,7 @@ RegisterNetEvent('angelicxs-FREE-VINscratch:GPSRoute',function(coords)
                 local Dist = #(Pos - vector3(coords[1], coords[2], coords[3]))
                     if Dist <= 100 and not DropPed then
                         local hash = HashGrabber(Config.DropOffModel)
-                        DropNPC = CreatePed(1, hash, coords[1], coords[2], (coords[3]-0.85), coords[4], false, false)
+                        DropNPC = CreatePed(1, hash, coords[1], coords[2], (coords[3]-1), coords[4], false, false)
                         FreezeEntityPosition(DropNPC, true)
                         SetEntityInvincible(DropNPC, true)
                         SetBlockingOfNonTemporaryEvents(DropNPC, true)
@@ -376,15 +366,14 @@ RegisterNetEvent('angelicxs-FREE-VINscratch:GPSRoute',function(coords)
     end)
     CreateThread(function()
         while Tracker do
-            Wait(100)
+            Wait(1000)
             local Pos2 = GetEntityCoords(Player)
             local DrivingVehicle = GetVehiclePedIsIn(Player, false)
 
             if IsPedInAnyVehicle(Player, true) then
-                Wait(2000)
+                Wait(200)
                 if #(Pos2 - vector3(coords[1], coords[2], coords[3])) < Config.TrackerDistance then
                     TriggerEvent('angelicxs-FREE-VINscratch:Notify',Config.Lang['tracker_removed'], Config.LangType['success'])
-                    TriggerServerEvent('angelicxs-FREE-VINscratch:Server:TrackerOff')
                     TriggerServerEvent('angelicxs-FREE-VINscratch:Server:NotifyPolice',5)
                     Tracker = false
                 elseif DrivingVehicle == MissionVehicle then
@@ -395,6 +384,15 @@ RegisterNetEvent('angelicxs-FREE-VINscratch:GPSRoute',function(coords)
             end
         end		
     end)
+    TriggerEvent('angelicxs-FREE-VINscratch:Notify', Config.Lang['find_dropoff'], Config.LangType['info'])
+    Wait(60*1000)
+    MissionRoute = AddBlipForCoord(coords[1], coords[2], coords[3])
+    SetBlipColour(MissionRoute,5)
+	BeginTextCommandSetBlipName("STRING")
+	AddTextComponentString(Config.Lang['delivery_blip'])
+	EndTextCommandSetBlipName(MissionRoute)
+	SetBlipRoute(MissionRoute, true)
+	SetBlipRouteColour(MissionRoute, 2)
 end)
 
 RegisterNetEvent('angelicxs-FREE-VINscratch:FailConditions', function()
@@ -409,6 +407,8 @@ RegisterNetEvent('angelicxs-FREE-VINscratch:FailConditions', function()
                     if DrivingVehicle ~= MissionVehicle then
                         TriggerEvent('angelicxs-FREE-VINscratch:Notify',Config.Lang['failed_vehicleswap'], Config.LangType['error'])
                         TriggerServerEvent('angelicxs-FREE-VINscratch:Server:ResetHeist')
+                        TriggerEvent('angelicxs-FREE-VINscratch:ResetHeist')
+                        break
                     end
                 end
             end
@@ -424,7 +424,8 @@ RegisterNetEvent('angelicxs-FREE-VINscratch:FailConditions', function()
                 if TimeLimit <= 0 then
                     TriggerEvent('angelicxs-FREE-VINscratch:Notify',Config.Lang['failed_timeup'], Config.LangType['error'])
                     TriggerServerEvent('angelicxs-FREE-VINscratch:Server:ResetHeist')
-                    Wait(1000)
+                    TriggerEvent('angelicxs-FREE-VINscratch:ResetHeist')
+                    break
                 end
             end
         end
@@ -463,6 +464,7 @@ RegisterNetEvent('angelicxs-FREE-VINscratch:Completion',function(coords)
         DeleteVehicle(MissionVehicle)
         TriggerServerEvent('angelicxs-FREE-VINscratch:Server:Completion')
         TriggerEvent('angelicxs-FREE-VINscratch:Notify',Config.Lang['reward'], Config.LangType['success'])
+        TriggerServerEvent('angelicxs-FREE-VINscratch:Server:ResetHeist')
         TriggerEvent('angelicxs-FREE-VINscratch:Server:ResetHeist')
         Wait(60000)
         DeleteEntity(DropNPC)
@@ -492,6 +494,7 @@ RegisterNetEvent('angelicxs-FREE-VINscratch:KeepScratch',function(coords)
             DeleteVehicle(MissionVehicle)
             TriggerEvent('angelicxs-FREE-VINscratch:Notify',Config.Lang['garage'], Config.LangType['success'])
             TriggerEvent('angelicxs-FREE-VINscratch:Server:ResetHeist')
+            TriggerEvent('angelicxs-FREE-VINscratch:ResetHeist')
             Wait(60000)
             DeleteEntity(DropNPC)
         elseif not CoastIsClear then
@@ -502,16 +505,6 @@ RegisterNetEvent('angelicxs-FREE-VINscratch:KeepScratch',function(coords)
     else
         TriggerEvent('angelicxs-FREE-VINscratch:Notify',Config.Lang['no_scratch'], Config.LangType['error'])
     end
-end)
-	
-RegisterNetEvent('angelicxs-FREE-VINscratch:TrackerOff')
-AddEventHandler('angelicxs-FREE-VINscratch:TrackerOff', function()
-    TrackingDeviceStatus = false
-end)
-
-RegisterNetEvent('angelicxs-FREE-VINscratch:TrackerOn')
-AddEventHandler('angelicxs-FREE-VINscratch:TrackerOn', function()
-    TrackingDeviceStatus = true
 end)
 
 RegisterNetEvent('angelicxs-FREE-VINscratch:CoastIsClearTrue')
@@ -537,22 +530,30 @@ end)
 RegisterNetEvent('angelicxs-FREE-VINscratch:ResetHeist')
 AddEventHandler('angelicxs-FREE-VINscratch:ResetHeist', function()
     if MissionVehicle ~= nil then
+        SetVehicleDoorsLockedForAllPlayers(MissionVehicle, false)
         SetEntityAsMissionEntity(MissionVehicle, false, false)
         MissionVehicle = nil
     end
     if GlobalJob then
+        GlobalJob = false
         TriggerServerEvent('angelicxs-FREE-VINscratch:Server:GlobalJobFalse')
     end
     if not CoastIsClear then
+        CoastIsClear = true
         TriggerServerEvent('angelicxs-FREE-VINscratch:Server:CoastIsClearTrue')
     end
     if TrackingDeviceStatus then
-        TriggerServerEvent('angelicxs-FREE-VINscratch:Server:TrackerOff')
+        TrackingDeviceStatus = false
     end    
     if MissionRoute ~= nil then
         RemoveBlip(MissionRoute)
         MissionRoute = nil
     end
+    if FindMeBlip ~= nil then
+        RemoveBlip(FindMeBlip)
+        FindMeBlip = nil
+    end
+    NotifyCopType = 'none'
     MissionType = 'none'
     DropLocationNPC = false
     CurrentJob = false
@@ -564,11 +565,11 @@ AddEventHandler('angelicxs-FREE-VINscratch:IsCoastClear', function(DropCoords)
     CreateThread(function()
         if not Config.LEOScratches and isLawEnforcement then
             while GlobalJob do
-                local Sleep = 1000
+                local Sleep = 2000
                 local Player = PlayerPedId()
                 local Distance = #(GetEntityCoords(Player)-vector3(DropCoords[1],DropCoords[2],DropCoords[3]))
                 if Distance <= Config.CleanGetAWayRadius then
-                    Sleep = 0
+                    Sleep = 500
                     TriggerServerEvent('angelicxs-FREE-VINscratch:Server:CoastIsClearFalse')
                 else
                     TriggerServerEvent('angelicxs-FREE-VINscratch:Server:CoastIsClearTrue')
@@ -679,6 +680,7 @@ end
 AddEventHandler('esx:onPlayerDeath', function()
 	if GlobalJob and CurrentJob then
         TriggerServerEvent('angelicxs-FREE-VINscratch:Server:ResetHeist')
+        TriggerEvent('angelicxs-FREE-VINscratch:ResetHeist')
         TriggerEvent('angelicxs-FREE-VINscratch:Notify', Config.Lang['failed_death'], Config.LangType['info'])
 	end
 end)
@@ -686,5 +688,6 @@ end)
 AddEventHandler('onResourceStop', function(resource)
     if GetCurrentResourceName() == resource then
         TriggerServerEvent('angelicxs-FREE-VINscratch:Server:ResetHeist')
+        TriggerEvent('angelicxs-FREE-VINscratch:ResetHeist')
     end
 end)
