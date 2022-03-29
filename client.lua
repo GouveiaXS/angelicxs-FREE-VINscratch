@@ -230,23 +230,24 @@ function Lockpick(StartSpot)
     local Player = PlayerPedId()
     local FoundIt = false
     local RandomOffset = math.random(-100, 100)
+    local FindTime = 30 * 60
     local FindMeBlip = AddBlipForRadius((StartSpot[1]+RandomOffset),(StartSpot[2]+RandomOffset),(StartSpot[3]+RandomOffset), 450.0)
     SetBlipSprite(FindMeBlip, 161)
     SetBlipColour(FindMeBlip, 83)
     SetBlipAsShortRange(FindMeBlip,false)
     CreateThread(function()
-        while not FoundIt do
-            local FindTime = 30 * 60
-            while FindTime ~= 0 do
-                Wait(1000)
-                FindTime = FindTime - 1
-                if FindTime <= 0 then
-                    FoundIt = true
-                    TriggerEvent('angelicxs-FREE-VINscratch:Notify',Config.Lang['failed_locate'], Config.LangType['error'])
-                    TriggerServerEvent('angelicxs-FREE-VINscratch:Server:ResetHeist')
-                    Wait(1000)
-                end
+        while FindTime ~= 0 do
+            if Findtime == 'found' then
+                break
+            elseif FindTime <= 0 then
+                RemoveBlip(FindMeBlip)
+                TriggerEvent('angelicxs-FREE-VINscratch:Notify',Config.Lang['failed_locate'], Config.LangType['error'])
+                TriggerServerEvent('angelicxs-FREE-VINscratch:Server:ResetHeist')
+                TriggerEvent('angelicxs-FREE-VINscratch:ResetHeist')
+                break
             end
+            FindTime = FindTime - 1
+            Wait(1000)
         end
     end)
     CreateThread(function()
@@ -274,6 +275,7 @@ function Lockpick(StartSpot)
                         end
                         Wait(500)
                         if CanLockPick == true then
+                            Findtime = 'found'
                             FoundIt = true
                             FreezeEntityPosition(Player, true)
                             RequestAnimDict("anim@amb@clubhouse@tutorial@bkr_tut_ig3@")
