@@ -261,7 +261,7 @@ Config.ClassZeroLocation = {
 Config.LangType = {
 	['error'] = 'error',
 	['success'] = 'success',
-	['info'] = 'inform'
+	['info'] = 'primary'
 }
 
 Config.Lang = {
