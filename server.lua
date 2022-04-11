@@ -79,28 +79,29 @@ AddEventHandler('angelicxs-FREE-VINscratch:Server:KeepScratch', function(Vehicle
                 }, function(rowsChanged)
             end)
     elseif Config.UseQBCore then
-        local src = source
         local vehicle = VehiclePlate
-        local pData = QBCore.Functions.GetPlayer(src)
+        local pData = QBCore.Functions.GetPlayer(source)
         local cid = pData.PlayerData.citizenid
-        local plate = QBCOREGeneratePlate()
-        MySQL.Async.insert('INSERT INTO player_vehicles (license, citizenid, vehicle, hash, mods, plate, state) VALUES (?, ?, ?, ?, ?, ?, ?)', {
-            pData.PlayerData.license,
-            cid,
-            vehicle,
-            vehicle,
-            '{}',
-            plate,
-            0
-            })
+        local plate = PlateQBGen()
+        MySQL.Async.execute('INSERT INTO player_vehicles (license, citizenid, vehicle, hash, mods, plate, state, garage) VALUES (@license, @citizenid, @vehicle, @hash, @mods, @plate, @state, @garage)', {
+            ['@license'] = pData.PlayerData.license,
+            ['@citizenid'] = cid,
+            ['@vehicle'] = vehicle[2],
+            ['@hash'] = vehicle[1],
+            ['@mods'] = '{}',
+            ['@plate'] = plate,
+            ['@state'] = 1,
+            ['@garage'] = "pillboxgarage"
+            }, function(rowsChanged)
+        end)
     end
 end)
 
-local function QBCOREGeneratePlate()
+function PlateQBGen()
     local plate = QBCore.Shared.RandomInt(1) .. QBCore.Shared.RandomStr(2) .. QBCore.Shared.RandomInt(3) .. QBCore.Shared.RandomStr(2)
     local result = MySQL.Sync.fetchScalar('SELECT plate FROM player_vehicles WHERE plate = ?', {plate})
     if result then
-        return QBCOREGeneratePlate()
+        return PlateQBGen()
     else
         return plate:upper()
     end
