@@ -64,10 +64,6 @@ elseif Config.UseQBCore then
             if Config.RemoveLockpick then
                 Player.Functions.RemoveItem(Config.LockpickName, 1)
             end
-            cb(true)
-        else
-            cb(false)
-        end	
     end)
 end
 --- Rewards
