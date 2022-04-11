@@ -58,7 +58,8 @@ CreateThread(function()
 
     elseif Config.UseQBCore then
 
-        QBCore = exports['qb-core']:GetCoreObject()
+        QBCore = exports['qb-core']:GetCoreObject()	
+	Wait(100)
 
         local playerData = QBCore.Functions.GetPlayerData()
         PlayerJob = playerData.job.name
@@ -266,9 +267,12 @@ function Lockpick(StartSpot)
                                     CanLockPick = cb
                                 end)                                
                             elseif Config.UseQBCore then
-                                QBCore.Functions.TriggerCallback('angelicxs-FREE-VINscratch:lockpick:QBCore', function(cb)
-                                    CanLockPick = cb
-                                end)
+                                local hasItem = QBCore.Functions.HasItem(Config.LockpickName)
+                                if hasItem then
+                                    QBCore.Functions.TriggerCallback('angelicxs-VINscratch:lockpick:QBCore', function(cb)
+                                    end)
+                                    CanLockPick = true
+                                end
                             end
                         end
                         Wait(500)
