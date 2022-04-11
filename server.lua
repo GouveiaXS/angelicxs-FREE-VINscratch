@@ -123,7 +123,7 @@ AddEventHandler('angelicxs-FREE-VINscratch:Server:Completion', function()
 		xPlayer.addAccountMoney(Config.AccountMoney,funds)
     elseif Config.UseQBCore then
         local Player = QBCore.Functions.GetPlayer(source)
-        QBCore.Functions.AddMoney(Config.AccountMoney, funds)
+        Player.Functions.AddMoney(Config.AccountMoney, funds)
     end
 end)
 
