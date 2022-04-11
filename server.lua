@@ -60,9 +60,7 @@ if Config.UseESX then
     end)
 elseif Config.UseQBCore then
     QBCore.Functions.CreateCallback('angelicxs-FREE-VINscratch:lockpick:QBCore', function(source, cb)
-        local hasItem = QBCore.Functions.HasItem(Config.LockpickName)
-        local players = QBCore.Functions.GetQBPlayers()
-        if hasItem then
+        local Player = QBCore.Functions.GetPlayer(source)
             if Config.RemoveLockpick then
                 Player.Functions.RemoveItem(Config.LockpickName, 1)
             end
