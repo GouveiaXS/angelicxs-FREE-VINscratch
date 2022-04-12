@@ -12,3 +12,5 @@ Criminals will go speak to the VIN dealer to request a vehicle to boost. After f
 - Idles at 0.00ms
 
 Youtube Preview: https://youtu.be/Mr66Jg-1r7M
+
+Interested in the premium version? Check out the REP BASED vehicle heist: https://forum.cfx.re/t/release-paid-angelicxs-rep-based-vehicle-heist/4838386
