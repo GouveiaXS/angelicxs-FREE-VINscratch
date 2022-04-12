@@ -59,12 +59,15 @@ CreateThread(function()
     elseif Config.UseQBCore then
 
         QBCore = exports['qb-core']:GetCoreObject()	
-	Wait(100)
+	
 
         local playerData = QBCore.Functions.GetPlayerData()
-        PlayerJob = playerData.job.name
-        PlayerGrade = playerData.job.grade.level
-        isLawEnforcement = LawEnforcement()
+			
+        if playerData.job ~= nil then
+            PlayerJob = playerData.job.name
+            PlayerGrade = playerData.job.grade.level
+            isLawEnforcement = LawEnforcement()
+        end
 
         RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)
             PlayerJob = job.name
