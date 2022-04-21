@@ -92,8 +92,8 @@ end)
 
 -- Starting NPC Spawn
 CreateThread(function()
-    local Player = PlayerPedId()
     while true do
+        local Player = PlayerPedId()
         for k, v in pairs(Config.NPCLocations) do
             local Pos = GetEntityCoords(Player)
             local Dist = #(Pos - vector3(v.Coords[1],v.Coords[2],v.Coords[3]))
@@ -126,8 +126,8 @@ end)
 -- Events
 
 CreateThread(function()
-    local Player = PlayerPedId()
     while true do
+        local Player = PlayerPedId()
         local Sleep = 1500
         local Pos = GetEntityCoords(Player)
         for k, v in pairs(Config.NPCLocations) do
