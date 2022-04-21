@@ -384,7 +384,7 @@ RegisterNetEvent('angelicxs-FREE-VINscratch:GPSRoute',function(coords)
                     TriggerServerEvent('angelicxs-FREE-VINscratch:Server:NotifyPolice',5)
                     Tracker = false
                 elseif DrivingVehicle == MissionVehicle then
-                    if TrackingDeviceStatus then
+                    if Tracker then
                         TriggerServerEvent('angelicxs-FREE-VINscratch:Server:TrackerCoords', Pos2)
                     end
                 end
@@ -442,7 +442,7 @@ end)
 
 RegisterNetEvent('angelicxs-FREE-VINscratch:TrackingVehicle')
 AddEventHandler('angelicxs-FREE-VINscratch:TrackingVehicle', function(targetCoords)
-	if isLawEnforcement and TrackingDeviceStatus then		
+	if isLawEnforcement then		
 		local Alpha = 80
 		local TrackerDevice = AddBlipForRadius(targetCoords.x, targetCoords.y, targetCoords.z, 50.0)
 		SetBlipHighDetail(TrackerDevice, true)
