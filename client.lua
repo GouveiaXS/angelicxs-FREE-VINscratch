@@ -126,8 +126,8 @@ end)
 -- Events
 
 CreateThread(function()
-    local Player = PlayerPedId()
     while true do
+	local Player = PlayerPedId()
         local Sleep = 1500
         local Pos = GetEntityCoords(Player)
         for k, v in pairs(Config.NPCLocations) do
