@@ -57,10 +57,22 @@ CreateThread(function()
         end)
 
     elseif Config.UseQBCore then
+	QBCore = exports["qb-core"]:GetCoreObject()
 
-        QBCore = exports['qb-core']:GetCoreObject()	
-	
-	Wait(200)
+	local playerData = QBCore.Functions.GetPlayerData()
+
+	CreateThread(function ()
+		while true do
+			if playerData.citizenid ~= nil then
+			    PlayerJob = playerData.job.name
+			    PlayerGrade = playerData.job.grade.level
+			    isLawEnforcement = LawEnforcement()
+			break
+			end
+			Wait(100)
+		end
+	end)	
+
         local playerData = QBCore.Functions.GetPlayerData()
 			
             PlayerJob = playerData.job.name
