@@ -503,7 +503,8 @@ RegisterNetEvent('angelicxs-FREE-VINscratch:KeepScratch',function(coords)
                 VehiclePlate.plate = OwnerPlate
                 TriggerServerEvent('angelicxs-FREE-VINscratch:Server:KeepScratch', VehiclePlate)
             elseif Config.UseQBCore then
-                TriggerServerEvent('angelicxs-FREE-VINscratch:Server:KeepScratch', MissionVehicle)
+		local VehiclePlate = {HashGrabber(Hash), Hash, VehicleName}		
+                TriggerServerEvent('angelicxs-FREE-VINscratch:Server:KeepScratch', VehiclePlate)
             end
             RemoveBlip(MissionRoute)
             SetEntityAsMissionEntity(MissionVehicle, false, false)
