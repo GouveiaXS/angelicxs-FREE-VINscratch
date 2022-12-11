@@ -293,6 +293,7 @@ Config.Lang = {
 	['startboat'] = 'An increase in stolen boats has been reported.',
 	['startheli'] = 'An increase in stolen helicopters has been reported.',
 	['track_on'] = 'A vehicle tracking device has been activated, GPS signal has been activated.',
+		['find_dropoff'] = 'Looking for a drop off point now, I will send it to you in a few minutes!',
 	['track_off'] = 'A vehicle tracking device has been deactivated, the GPS signal is no longer available.',
 	['failed_death'] = 'Robbery failed as you have been incapacitated.',
 	['failed_vehicleswap'] = 'Robbery failed as you got in a different vehicle.',
