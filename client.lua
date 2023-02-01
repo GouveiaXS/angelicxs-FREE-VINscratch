@@ -37,6 +37,9 @@ end)
 CreateThread(function()
     if Config.UseESX then
         ESX = exports["es_extended"]:getSharedObject()
+	while not ESX.IsPlayerLoaded() do
+            Wait(100)
+        end
     
         local playerData = ESX.GetPlayerData()
         PlayerJob = playerData.job.name
