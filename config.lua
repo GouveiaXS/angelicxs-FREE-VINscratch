@@ -20,7 +20,7 @@ Config.RemoveLockpick = true
 --LEO Configuration
 Config.RequireMinimumLEO = true 	-- When on will require a minimum number of LEOs to be available to start robbery
 Config.RequiredNumberLEO = 1		-- Minimum number of LEO needed for robbery to start when Config.RequireMinimumLEO = true
-Config.LEOJobName = 'police' 		-- Job name of law enforcement officers
+Config.LEOJobName = {'police',} 		-- Job name of law enforcement officers, can be multiple jobs
 Config.LEOScratches = true			-- Turning this true will allow LEO's to do VIN scratches
 Config.CleanGetAway = true 			-- Turning this off means that the vehicle can be turned in with cops beside the drop of point.
 Config.CleanGetAWayRadius = 250 	-- How far away the cops need to be to allow for a turn in (with Config.CleanGetAway turned on)
