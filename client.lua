@@ -588,13 +588,12 @@ end)
 -- Functions
 
 function LawEnforcement()
-    if not PlayerJob then
-        return false
-    elseif PlayerJob ~= Config.LEOJobName then
-        return false
-    elseif PlayerJob == Config.LEOJobName then
-        return true
+    for i = 1, #Config.LEOJobName do
+        if PlayerJob == Config.LEOJobName[i] then
+            return true
+        end
     end
+    return false
 end
 
 function VehicleSpawner(category)
