@@ -16,7 +16,7 @@ if Config.UseESX then
 
         for i=1, #xPlayers, 1 do
             local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
-            if xPlayer.job.name == Config.LEOJobName then
+            if LawEnforcementServer(xPlayer.job.name) then
                 cops = cops + 1
             end
         end
@@ -32,7 +32,7 @@ elseif Config.UseQBCore then
         local cops = 0
         local players = QBCore.Functions.GetQBPlayers()
         for k, v in pairs(players) do
-            if v.PlayerData.job.name == Config.LEOJobName then
+            if LawEnforcementServer(v.PlayerData.job.name) then
                 cops = cops + 1
             end
         end
@@ -165,3 +165,12 @@ RegisterServerEvent('angelicxs-FREE-VINscratch:Server:TrackerCoords')
 AddEventHandler('angelicxs-FREE-VINscratch:Server:TrackerCoords', function(coords)
 	TriggerClientEvent('angelicxs-FREE-VINscratch:TrackingVehicle',-1,coords)
 end)
+
+function LawEnforcementServer(jobname)
+    for i = 1, #Config.LEOJobName do
+        if jobname == Config.LEOJobName[i] then
+            return true
+        end
+    end
+    return false
+end
