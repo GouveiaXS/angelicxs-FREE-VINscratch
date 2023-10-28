@@ -401,7 +401,6 @@ end)
 
 RegisterNetEvent('angelicxs-FREE-VINscratch:FailConditions', function()
     local Player = PlayerPedId()
-
     CreateThread(function()
         while CarAvailable do
             if IsPedInAnyVehicle(Player, true) then
@@ -416,25 +415,26 @@ RegisterNetEvent('angelicxs-FREE-VINscratch:FailConditions', function()
                     end
                 end
             end
-        Wait(1000)
+            Wait(1000)
         end
     end)
-    CreateThread(function()
-        local TimeLimit = Config.TimeLimit * 60
-        while CarAvailable do
-            while TimeLimit ~= 0 do
-                Wait(1000)
-                TimeLimit = TimeLimit - 1
-                if TimeLimit <= 0 then
-                    TriggerEvent('angelicxs-FREE-VINscratch:Notify',Config.Lang['failed_timeup'], Config.LangType['error'])
-                    TriggerServerEvent('angelicxs-FREE-VINscratch:Server:ResetHeist')
-                    TriggerEvent('angelicxs-FREE-VINscratch:ResetHeist')
-                    break
-                end
-            end
-        end
-    end)
+	CreateThread(function()
+	    local TimeLimit = Config.TimeLimit * 60
+	    while TimeLimit ~= 0 do
+	        Wait(1000)
+	        TimeLimit = TimeLimit - 1
+	        if TimeLimit <= 0 then
+	            TriggerEvent('angelicxs-FREE-VINscratch:Notify',Config.Lang['failed_timeup'], Config.LangType['error'])
+	            TriggerServerEvent('angelicxs-FREE-VINscratch:Server:ResetHeist')
+	            TriggerEvent('angelicxs-FREE-VINscratch:ResetHeist')
+	            break
+	        elseif not CarAvailable then
+	            break
+	        end
+	    end
+	end)
 end)
+
 
 
 RegisterNetEvent('angelicxs-FREE-VINscratch:TrackingVehicle')
