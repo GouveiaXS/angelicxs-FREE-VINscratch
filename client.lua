@@ -269,7 +269,7 @@ function Lockpick(StartSpot)
                             elseif Config.UseQBCore then
                                 local hasItem = QBCore.Functions.HasItem(Config.LockpickName)
                                 if hasItem then
-                                    QBCore.Functions.TriggerCallback('angelicxs-VINscratch:lockpick:QBCore', function(cb)
+                                    QBCore.Functions.TriggerCallback('angelicxs-FREE-VINscratch:lockpick:QBCore', function(cb)
                                     end)
                                     CanLockPick = true
                                 end
